@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<body>
+<head>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<h1 class="heading">ONLINE EXAMINATION</h1>
+<form method="post" action="insertion.php">
+<center>
+<p class="enter">
+<label>ENTER YOUR NAME:</label>
+<input type="text" name="name"><br>
+<br><label>ENTER YOUR REGISTER NUMBER:</label>
+<input type="text" name="regno"><br>
+</p></center>
+<br><b><center>Answer the following Multiple Choice Questions(MCQs):</center></b><br>
+<br>
+<section class="ques">1. Which of the following is not an animal?<br>
+<input type="radio" name="animal" value="Dog">Dog<br>
+<input type="radio" name="animal" value="Cat">Cat<br>
+<input type="radio" name="animal" value="Parrot">Parrot<br>
+<input type="radio" name="animal" value="Giraffee">Giraffee<br>
+<br>2. The acronym PHP stands for_______<br>
+<input type="radio" name="abbr" value="Pre Hypertext Processor">Pre Hypertext Processor<br>
+<input type="radio" name="abbr" value="Hypertext Pre-Processor">Hypertext Pre-Processor<br>
+<input type="radio" name="abbr" value="Preferred Hypertext Processor">Preferred Hypertext Processor<br>
+<input type="radio" name="abbr" value="None of these">None of these<br>
+<br>3. The capital of Australia is________<br>
+<input type="radio" name="cap" value="Canberra">Canberra<br>
+<input type="radio" name="cap" value="Sydney">Sydney<br>
+<input type="radio" name="cap" value="Melbourne">Melbourne<br>
+<input type="radio" name="cap" value="Perth">Perth<br>
+<br>4. Who discovered computer?<br>
+<input type="radio" name="comp" value="Charles Babbage">Charles Babbage<br>
+<input type="radio" name="comp" value="Guglielmo Marconi">Guglielmo Marconi<br>
+<input type="radio" name="comp" value="Thomas Edison">Thomas Edison<br>
+<input type="radio" name="comp" value="Alexander Graham Bell">Alexander Graham Bell<br>
+<br>5.WWW stands for?<br>
+<input type="radio" name="abb" value="World Whole Web">World Whole Web<br>
+<input type="radio" name="abb" value="Wide World Web">Wide World Web<br>
+<input type="radio" name="abb" value="World Wide Web">World Wide Web<br>
+<input type="radio" name="abb" value="Web World Wide">Web World Wide<br>
+</section>
+<br><center>
+<input class="submit" type="submit" value="SUBMIT TEST">
+</center>
+</form>
+</body>
+</html>
+
+(insertion.php)
+<!DOCTYPE html>
+<html>
+<body>
+<head>
+<link href="style.css" rel="stylesheet" type="text/css">
+<h1 class="heading">ONLINE EXAMINATION</h1>
+</head>
+<body class="result">
+<?php
+	$name=$_POST['name'];
+	$reg=$_POST['regno'];
+	$a1=$_POST['animal'];
+	$a2=$_POST['abbr'];
+	$a3=$_POST['cap'];
+	$a4=$_POST['comp'];
+	$a5=$_POST['abb'];
+	$scores=0;
+	$format="id='result'";
+	if (strcmp($a1,"Parrot")==0)
+	{	$scores+=5;}
+	if(strcmp($a2,"Hypertext Pre-Processor")==0)
+	{	$scores+=5;}
+	if(strcmp($a3,"Canberra")==0)
+	{	$scores+=5;}
+	if(strcmp($a4,"Charles Babbage")==0)
+	{	$scores+=5;}
+	if(strcmp($a5,"World Wide Web")==0)
+	{	$scores+=5;}
+	$link=mysqli_connect("localhost","root","","mcqtest");
+	if(!$link)
+	{
+		die("ERROR:Connection failed.".mysqli_connect_error());
+	}
+	$query="INSERT INTO info(name,regnum,score)VALUES('$name','$reg','$scores');";
+	$query.="SELECT * FROM info;";
+	$query.="DELETE FROM info";
+	if (mysqli_multi_query($link,$query))
+	{
+		do{
+			if($res=mysqli_store_result($link))
+			{
+				echo "<p $format>";
+				while($row=mysqli_fetch_row($res))
+				{
+					echo "<b>CONGRATULATIONS!</b><br>Here's your result!!!<br>";
+					echo "<b>NAME:</b>".$row[0]."<br>";
+					echo "<b>REGISTER NUMBER:</b>".$row[1]."<br>";
+					echo "<b>YOUR SCORE:</b>".$row[2]."<br>";
+					
+				}
+				echo "</p>";
+				mysqli_free_result($res);
+			}
+		}while(mysqli_next_result($link));
+	}
+	mysqli_close($link);
+?>
+</body>
+</html>
+
+(style.css)
+form{
+	border:2px dotted black;
+	padding:10px;
+	margin-left:20%;
+	margin-right:20%;
+	background-color:lightgrey;
+}
+.heading{
+	border:1px solid black;
+	padding:2px;
+	text-align:center;
+	color:black;
+	font-size:40px;
+	margin-left:20%;
+	margin-right:20%;
+	background-color:lightblue;
+}
+body{
+	background-color:grey;
+}
+.submit{
+	border:1px solid white;
+	padding:3px;
+	text-align:center;
+	background-color:black;
+	color:white;
+	margin-left:25%;
+	margin-right:25%;
+}
+.enter{
+	border:1px solid black;
+	display:inline-block;
+	width:500px;
+	padding:5px;
+	text-align:center;
+}
+label{
+	display:inline-block;
+	width:300px;
+}
+#result{
+	border:2px dotted black;
+	padding:10px;
+	margin-left:20%;
+	margin-right:20%;
+	background-color:lightgrey;
+	text-align:center;
+}
+.ques{
+	border:1px solid black;
+	padding:5px;
+	margin-left:30%;
+	margin-right:30%;
+}
